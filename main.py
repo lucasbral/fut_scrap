@@ -42,7 +42,7 @@ for partida in tqdm(part, desc="Processando partidas"):
 
 
 print(data_partidas)
-data_partidas.to_csv('partidas.csv', index=False)
+data_partidas.to_csv('output/partidas.csv', index=False)
 
 end_time = time.time()
 execution_time_seconds = end_time - start_time
