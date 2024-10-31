@@ -19,10 +19,11 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     Returns:
         pd.DataFrame: DataFrame contendo as informações das partidas, como times, datas, placares, etc.
     """
-
-    option = Options()
-    option.headless = True
-    driver = webdriver.Firefox(options=option)
+   
+    options = Options()
+    options.headless = True
+    options.add_argument('--headless')
+    driver = webdriver.Firefox(options=options)
 
     driver.get(url)
     time.sleep(delay)
@@ -75,6 +76,7 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     yellow_cards_home = []
     red_cards_home = []
     gols_home = []
+    sec_card_home = []
 
     for event in events_home:
         minute = event.find('span', class_='Opta-Event-Min').text.strip().replace('\u200e', '').replace('\u200f', '')
@@ -84,6 +86,9 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
         elif event.find('p', class_='Opta-Icon Opta-IconRed'):
             player = event.find('img')['alt'].strip()
             red_cards_home.append({'player': player, 'minute': minute})
+        elif event.find('p', class_='Opta-Icon Opta-IconDouble'):
+            player = event.find('img')['alt'].strip()
+            sec_card_home.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconGoal'):
             player = event.find('img')['alt'].strip()
             gols_home.append({'player': player, 'minute': minute,'cont':0,'penal':0})
@@ -103,6 +108,7 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     yellow_cards_away = []
     red_cards_away = []
     gols_away = []
+    sec_card_away = []
 
     for event in events_away:
         minute = event.find('span', class_='Opta-Event-Min').text.strip().replace('\u200e', '').replace('\u200f', '')
@@ -112,6 +118,9 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
         elif event.find('p', class_='Opta-Icon Opta-IconRed'):
             player = event.find('img')['alt'].strip()
             red_cards_away.append({'player': player, 'minute': minute})
+        elif event.find('p', class_='Opta-Icon Opta-IconDouble'):
+            player = event.find('img')['alt'].strip()
+            sec_card_away.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconGoal'):
             player = event.find('img')['alt'].strip()
             gols_away.append({'player': player, 'minute': minute,'cont':0,'penal':0})
@@ -137,7 +146,10 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
         'gols_home': json.dumps(gols_home),
         'yellow_cards_away': json.dumps(yellow_cards_away),
         'red_cards_away': json.dumps(red_cards_away),
-        'gols_away': json.dumps(gols_away)
+        'gols_away': json.dumps(gols_away),
+        'sec_card_home': json.dumps(sec_card_home),
+        'sec_card_away': json.dumps(sec_card_away),
+        'link':url
     }
 
     # Criação do DataFrame sem listas aninhadas
@@ -145,11 +157,8 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     return df
 
 #pd.set_option('display.max_columns', None)
-#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/darutr6zq3l6dxq434ifndg5w/match-summary", 6)
-
-##print(df)
+#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/dbtewel5a77wv34aurem31n2s/match-summary",6)
+#print(df)
 #df.to_csv('partidas.csv', index=False)
-
-
 #url_p = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/darutr6zq3l6dxq434ifndg5w/match-summary"
 #url_contra = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/d9r0p4ogsqatqq3gn5qv2krh0/match-summary"
