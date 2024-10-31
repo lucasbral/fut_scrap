@@ -56,16 +56,16 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     match_data_text = [data.text.strip() for data in match_data]
     if match_data_text:
         match_data_parts = match_data_text[0].split('\n')
-        est = public = arbitro = "No data"
+        est = public = arbitro = ""
         for part in match_data_parts:
-            if part.startswith('Est'):
-                est = part.replace('Est', '').strip()
-            elif part.startswith('P'):
-                public = part.replace('P', '').strip()
+            if part.startswith('Est:'):
+                est = part.replace('Est:', '').strip()
+            elif part.startswith('P:'):
+                public = part.replace('P:', '').strip()
             else:
                 arbitro = part.strip()
     else:
-        est = public = arbitro = "No data"
+        est = public = arbitro = ""
 
     # Events club home
     home_events_list = soup.find_all('ul', class_='Opta-Events Opta-Home')
