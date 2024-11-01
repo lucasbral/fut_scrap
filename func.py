@@ -54,18 +54,22 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     # Encontre os dados da partida
     match_data = soup.find_all('div', class_='Opta-Matchdata')
     match_data_text = [data.text.strip() for data in match_data]
-    if match_data_text:
-        match_data_parts = match_data_text[0].split('\n')
-        est = public = arbitro = ""
-        for part in match_data_parts:
-            if part.startswith('Est:'):
-                est = part.replace('Est:', '').strip()
-            elif part.startswith('P:'):
-                public = part.replace('P:', '').strip()
-            else:
-                arbitro = part.strip()
-    else:
-        est = public = arbitro = ""
+
+    est = public = arbitro = "No data"
+
+    if match_data:
+        for data in match_data:
+            dls = data.find_all('dl')
+            for dl in dls:
+                dt = dl.find('dt').text.strip()
+                dd = dl.find('dd').text.strip()
+                if dt == 'Est':
+                    est = dd
+                elif dt == 'P':
+                    public = dd
+                else:
+                    arbitro = dd
+
 
     # Events club home
     home_events_list = soup.find_all('ul', class_='Opta-Events Opta-Home')
@@ -81,24 +85,47 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     for event in events_home:
         minute = event.find('span', class_='Opta-Event-Min').text.strip().replace('\u200e', '').replace('\u200f', '')
         if event.find('p', class_='Opta-Icon Opta-IconYellow'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             yellow_cards_home.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconRed'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             red_cards_home.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconDouble'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             sec_card_home.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconGoal'):
-            player = event.find('img')['alt'].strip()
-            gols_home.append({'player': player, 'minute': minute,'cont':0,'penal':0})
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_home.append({'player': player, 'minute': minute, 'cont': 0, 'penal': 0})
         elif event.find('p', class_='Opta-Icon Opta-IconOwn'):
-            player = event.find('img')['alt'].strip()
-            gols_home.append({'player': player, 'minute': minute,'cont':1,'penal':0})
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_home.append({'player': player, 'minute': minute, 'cont': 1, 'penal': 0})
         elif event.find('p', class_='Opta-Icon Opta-IconPenGoal'):
-            player = event.find('img')['alt'].strip()
-            gols_home.append({'player': player, 'minute': minute,'cont':0,'penal':1})
-
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_home.append({'player': player, 'minute': minute, 'cont': 0, 'penal': 1})
     # Events club away
     away_events_list = soup.find_all('ul', class_='Opta-Events Opta-Away')
     events_away = []
@@ -113,24 +140,47 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     for event in events_away:
         minute = event.find('span', class_='Opta-Event-Min').text.strip().replace('\u200e', '').replace('\u200f', '')
         if event.find('p', class_='Opta-Icon Opta-IconYellow'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             yellow_cards_away.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconRed'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             red_cards_away.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconDouble'):
-            player = event.find('img')['alt'].strip()
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
             sec_card_away.append({'player': player, 'minute': minute})
         elif event.find('p', class_='Opta-Icon Opta-IconGoal'):
-            player = event.find('img')['alt'].strip()
-            gols_away.append({'player': player, 'minute': minute,'cont':0,'penal':0})
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_away.append({'player': player, 'minute': minute, 'cont': 0, 'penal': 0})
         elif event.find('p', class_='Opta-Icon Opta-IconOwn'):
-            player = event.find('img')['alt'].strip()
-            gols_away.append({'player': player, 'minute': minute,'cont':1,'penal':0})
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_away.append({'player': player, 'minute': minute, 'cont': 1, 'penal': 0})
         elif event.find('p', class_='Opta-Icon Opta-IconPenGoal'):
-            player = event.find('img')['alt'].strip()
-            gols_away.append({'player': player, 'minute': minute,'cont':0,'penal':1})
-
+            player_img = event.find('img')
+            if player_img and 'alt' in player_img.attrs:
+                player = player_img['alt'].strip()
+            else:
+                player = "undefined"
+            gols_away.append({'player': player, 'minute': minute, 'cont': 0, 'penal': 1})
     # Criação do DataFrame
     data = {
         'home_team': home_team_names,
@@ -157,7 +207,7 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     return df
 
 #pd.set_option('display.max_columns', None)
-#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/dbtewel5a77wv34aurem31n2s/match-summary",6)
+#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2022/css9eoc46vca8gkmv5z7603ys/match/view/3tpq02v9frz3f4vn8epiq5dlg",6)
 #print(df)
 #df.to_csv('partidas.csv', index=False)
 #url_p = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/darutr6zq3l6dxq434ifndg5w/match-summary"
