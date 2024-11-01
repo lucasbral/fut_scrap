@@ -3,6 +3,8 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 import time
 from func import extract_data
 from tqdm import tqdm
@@ -12,19 +14,19 @@ start_time = time.time()
 #link da tabela do campeonato no ano de 2023
 url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2021/czjx4rda7swlzql5d1cq90r8/opta-player-stats"
 
-def web_driver():
-    driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
-    options = webdriver.ChromeOptions()
-    options.add_argument("--verbose")
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument("--window-size=1920, 1200")
-    options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(options=options)
-    return driver
+chrome_options = Options()
+chrome_options.add_argument('--headless')  # Run in headless mode if desired
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
-driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
+# Specify the path to the chromedriver
+chromedriver_path = '/usr/lib/chromium-browser/chromedriver'  # Adjust this path as necessary
+
+# Create a Service object with the chromedriver path
+service = Service(chromedriver_path)
+
+# Initialize the Chrome WebDriver with service and options
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/dbtewel5a77wv34aurem31n2s/match-summary"
 
