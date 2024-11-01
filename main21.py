@@ -7,11 +7,12 @@ from selenium.webdriver.firefox.options import Options
 import time
 from func import extract_data
 from tqdm import tqdm
+from fix import fix_missings
 
 start_time = time.time()
 
 #link da tabela do campeonato no ano de 2022
-url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2022/css9eoc46vca8gkmv5z7603ys/opta-player-stats"
+url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2021/css9eoc46vca8gkmv5z7603ys/opta-player-stats"
 
 option = Options()
 option.headless = True
@@ -40,11 +41,14 @@ for partida in tqdm(part, desc="Processando partidas"):
     print(partida)
     p = extract_data(partida, 9)
     data_partidas = pd.concat([data_partidas, p], ignore_index=True)
-    data_partidas.to_csv('output/partidas_22.csv', index=False)
+    data_partidas.to_csv('output/partidas_21.csv', index=False)
 
 
 print(data_partidas)
-data_partidas.to_csv('output/partidas_22.csv', index=False)
+
+data_partidas = fix_missings(url,data_partidas)
+
+data_partidas.to_csv('output/partidas_21.csv', index=False)
 
 end_time = time.time()
 execution_time_seconds = end_time - start_time
