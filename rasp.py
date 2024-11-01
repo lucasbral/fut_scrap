@@ -13,6 +13,7 @@ start_time = time.time()
 url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2021/czjx4rda7swlzql5d1cq90r8/opta-player-stats"
 
 def web_driver():
+    driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
     options = webdriver.ChromeOptions()
     options.add_argument("--verbose")
     options.add_argument('--no-sandbox')
@@ -23,7 +24,7 @@ def web_driver():
     driver = webdriver.Chrome(options=options)
     return driver
 
-driver = web_driver()
+driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
 
 url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/dbtewel5a77wv34aurem31n2s/match-summary"
 
