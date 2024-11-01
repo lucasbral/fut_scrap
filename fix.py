@@ -48,13 +48,3 @@ def fix_missings(url: str, df: pd.DataFrame) -> pd.DataFrame:
     return data_partidas
 
 
-url = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2022/css9eoc46vca8gkmv5z7603ys/opta-player-stats"
-
-aa = pd.read_csv('output/partidas_22.csv')
-print(aa)
-
-b = fix_missings(url,aa)
-
-print(b)
-
-b.to_csv('output/partidas_22.csv', index=False)
