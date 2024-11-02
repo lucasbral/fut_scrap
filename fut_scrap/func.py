@@ -207,7 +207,7 @@ def extract_data(url: str, delay: int) -> pd.DataFrame:
     return df
 
 #pd.set_option('display.max_columns', None)
-#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2022/css9eoc46vca8gkmv5z7603ys/match/view/3tpq02v9frz3f4vn8epiq5dlg",6)
+#df = extract_data("https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/dykfkagvqqndkwt56ph8meqz8/match-summary",6)
 #print(df)
 #df.to_csv('partidas.csv', index=False)
 #url_p = "https://optaplayerstats.statsperform.com/pt_BR/soccer/brasileir%C3%A3o-s%C3%A9rie-a-2023/czjx4rda7swlzql5d1cq90r8/match/view/darutr6zq3l6dxq434ifndg5w/match-summary"
